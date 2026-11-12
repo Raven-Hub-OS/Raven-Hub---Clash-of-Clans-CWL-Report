@@ -24,8 +24,8 @@ export function UpdateNotifier({ onToast }: UpdateNotifierProps): JSX.Element | 
       setDownloaded(true)
       onToast({
         kind: 'success',
-        title: 'Atualização baixada',
-        message: 'A nova versão foi baixada. Clique para reiniciar e instalar.'
+        title: 'Update downloaded',
+        message: 'The new version has been downloaded. Click to restart and install.'
       })
     },
     [onToast]
@@ -39,7 +39,7 @@ export function UpdateNotifier({ onToast }: UpdateNotifierProps): JSX.Element | 
   const handleError = useCallback((message: string) => {
     onToast({
       kind: 'error',
-      title: 'Erro ao verificar atualizações',
+      title: 'Error checking for updates',
       message
     })
   }, [onToast])
@@ -89,10 +89,10 @@ export function UpdateNotifier({ onToast }: UpdateNotifierProps): JSX.Element | 
       </div>
       <div className="toast-content">
         <p className="toast-title">
-          {downloaded ? 'Atualização pronta' : 'Nova versão disponível'}
+          {downloaded ? 'Update ready' : 'New version available'}
         </p>
         {progress !== null ? (
-          <p className="toast-message">Baixando: {progress.toFixed(0)}%</p>
+          <p className="toast-message">Downloading: {progress.toFixed(0)}%</p>
         ) : null}
       </div>
       <div style={{ display: 'flex', gap: 8 }}>
@@ -103,14 +103,14 @@ export function UpdateNotifier({ onToast }: UpdateNotifierProps): JSX.Element | 
             onClick={() => {
               onToast({
                 kind: 'success',
-                title: 'Atualização iniciada',
-                message: 'A nova versão será baixada em segundo plano.'
+                title: 'Update started',
+                message: 'The new version will be downloaded in the background.'
               })
               void window.raven?.installUpdate?.()
             }}
           >
             <DownloadIcon size={14} />
-            Atualizar agora
+            Update now
           </button>
         ) : (
           <button
@@ -119,7 +119,7 @@ export function UpdateNotifier({ onToast }: UpdateNotifierProps): JSX.Element | 
             onClick={handleInstall}
           >
             <DownloadIcon size={14} />
-            Reiniciar e atualizar
+            Restart and update
           </button>
         )}
         <button type="button" className="icon-button toast-close" onClick={dismiss} aria-label="Dismiss">

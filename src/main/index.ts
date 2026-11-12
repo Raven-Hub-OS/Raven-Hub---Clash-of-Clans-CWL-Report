@@ -55,7 +55,7 @@ function createWindow(): void {
     backgroundColor: '#0b0d12',
     title: APP_NAME,
     icon: app.isPackaged
-      ? join(process.resourcesPath, 'icon.png')
+      ? join(process.resourcesPath, 'icon.ico')
       : join(__dirname, '../../build/icon.png'),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
