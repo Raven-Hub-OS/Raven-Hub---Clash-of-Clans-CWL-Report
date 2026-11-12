@@ -33,6 +33,6 @@ jobs:
       - name: Build e publicar para Windows
         run: npm run build:win -- --publish always
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
           WINEPREFIX: /home/runner/.wine
           HOME: /home/runner
