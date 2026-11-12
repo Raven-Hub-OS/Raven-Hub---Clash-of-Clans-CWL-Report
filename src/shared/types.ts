@@ -220,7 +220,9 @@ export const IPC_CHANNELS = {
   librarySaveRoster: 'library:save-roster',
   libraryGetRoster: 'library:get-roster',
   libraryExportRoster: 'library:export-roster',
-  rosterLoadClan: 'roster:load-clan'
+  rosterLoadClan: 'roster:load-clan',
+  updateCheck: 'update:check',
+  updateInstall: 'update:install'
 } as const
 
 export const MAX_CLANS = 20

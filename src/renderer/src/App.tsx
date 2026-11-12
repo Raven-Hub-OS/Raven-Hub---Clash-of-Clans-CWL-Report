@@ -25,6 +25,7 @@ import { LibraryView } from './components/LibraryView'
 import { RosterMakerView } from './components/RosterMakerView'
 import { SaveReportModal } from './components/SaveReportModal'
 import { DiscordIcon, GlobeIcon } from './components/Icons'
+import { UpdateNotifier } from './components/UpdateNotifier'
 import { errorMessage } from './lib/errors'
 
 type View = 'home' | 'loading' | 'report'
@@ -399,6 +400,8 @@ export default function App(): JSX.Element {
           onShowItem={(filePath) => void handleShowItem(filePath)}
         />
       ) : null}
+
+      <UpdateNotifier onToast={setToast} />
     </div>
   )
 }

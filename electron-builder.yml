@@ -41,6 +41,11 @@ nsis:
 portable:
   artifactName: RavenHub-Clash-of-Clans-CWL-Report-${version}-portable.${ext}
 
+publish:
+  provider: github
+  owner: Raven-Hub-OS
+  repo: Raven-Hub---Clash-of-Clans-CWL-Report
+
 linux:
   icon: build/icon.png
   category: Office

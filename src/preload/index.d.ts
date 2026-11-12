@@ -42,6 +42,13 @@ export interface RavenApi {
   exportRoster: (draft: RosterDraft) => Promise<SaveResponse>
   loadRosterClan: (tag: string, seasonKey: string | null) => Promise<RosterClanLoadResponse>
   onProgress: (callback: (event: ProgressEvent) => void) => () => void
+  onUpdateChecking: (callback: () => void) => () => void
+  onUpdateAvailable: (callback: (info: unknown) => void) => () => void
+  onUpdateNotAvailable: (callback: () => void) => () => void
+  onUpdateDownloadProgress: (callback: (progress: unknown) => void) => () => void
+  onUpdateDownloaded: (callback: (info: unknown) => void) => () => void
+  onUpdateError: (callback: (message: string) => void) => () => void
+  installUpdate: () => Promise<void>
 }
 
 declare global {

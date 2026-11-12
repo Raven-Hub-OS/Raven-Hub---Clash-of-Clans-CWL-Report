@@ -50,7 +50,62 @@ const api = {
     return () => {
       ipcRenderer.removeListener(IPC_CHANNELS.progress, listener)
     }
-  }
+  },
+  onUpdateChecking: (callback: () => void): (() => void) => {
+    const listener = (_event: Electron.IpcRendererEvent): void => {
+      callback()
+    }
+    ipcRenderer.on('update-checking', listener)
+    return () => {
+      ipcRenderer.removeListener('update-checking', listener)
+    }
+  },
+  onUpdateAvailable: (callback: (info: unknown) => void): (() => void) => {
+    const listener = (_event: Electron.IpcRendererEvent, info: unknown): void => {
+      callback(info)
+    }
+    ipcRenderer.on('update-available', listener)
+    return () => {
+      ipcRenderer.removeListener('update-available', listener)
+    }
+  },
+  onUpdateNotAvailable: (callback: () => void): (() => void) => {
+    const listener = (_event: Electron.IpcRendererEvent): void => {
+      callback()
+    }
+    ipcRenderer.on('update-not-available', listener)
+    return () => {
+      ipcRenderer.removeListener('update-not-available', listener)
+    }
+  },
+  onUpdateDownloadProgress: (callback: (progress: unknown) => void): (() => void) => {
+    const listener = (_event: Electron.IpcRendererEvent, progress: unknown): void => {
+      callback(progress)
+    }
+    ipcRenderer.on('update-download-progress', listener)
+    return () => {
+      ipcRenderer.removeListener('update-download-progress', listener)
+    }
+  },
+  onUpdateDownloaded: (callback: (info: unknown) => void): (() => void) => {
+    const listener = (_event: Electron.IpcRendererEvent, info: unknown): void => {
+      callback(info)
+    }
+    ipcRenderer.on('update-downloaded', listener)
+    return () => {
+      ipcRenderer.removeListener('update-downloaded', listener)
+    }
+  },
+  onUpdateError: (callback: (message: string) => void): (() => void) => {
+    const listener = (_event: Electron.IpcRendererEvent, message: string): void => {
+      callback(message)
+    }
+    ipcRenderer.on('update-error', listener)
+    return () => {
+      ipcRenderer.removeListener('update-error', listener)
+    }
+  },
+  installUpdate: () => ipcRenderer.invoke(IPC_CHANNELS.updateInstall)
 }
 
 contextBridge.exposeInMainWorld('raven', api)
