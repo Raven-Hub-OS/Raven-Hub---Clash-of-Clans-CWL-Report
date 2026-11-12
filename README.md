@@ -1,230 +1,529 @@
-# Raven Hub - Clash of Clans CWL Report
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raven Hub — Organization</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080c14;
+      --surface: #0f172a;
+      --surface-light: #172237;
+      --surface-hover: #121c2e;
+      --primary: #2563eb;
+      --primary-hover: #3b82f6;
+      --primary-glow: rgba(37, 99, 235, 0.45);
+      --primary-dim: rgba(37, 99, 235, 0.10);
+      --secondary: #6999ff;
+      --accent: #22d3ee;
+      --accent-glow: rgba(34, 211, 238, 0.35);
+      --text: #f8fafc;
+      --text-muted: #cbd5e1;
+      --text-subtle: #94a3b8;
+      --border: #1e293b;
+      --border-glass: rgba(255, 255, 255, 0.06);
+      --success: #34d399;
+      --warning: #fbbf24;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --shadow-glow: 0 0 40px var(--primary-glow);
+      --shadow-accent: 0 0 40px var(--accent-glow);
+      --glass-bg: rgba(8, 12, 20, 0.55);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --transition: 0.3s ease;
+    }
 
-A free Windows desktop app that turns Clash of Clans Clan War Leagues history into a clean,
-shareable Excel report.
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-Paste one or more clan tags, choose nothing else, and the app finds the latest **finished** CWL
-season available in ClashKing, aggregates every player's attack and defense performance, previews
-the result in-app and exports a styled XLSX workbook.
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-> This material is unofficial and is not endorsed by Supercell. See the
-> [Supercell Fan Content Policy](https://www.supercell.com/fan-content-policy).
+    a { color: var(--primary-hover); text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
-## Features
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
 
-- Accepts up to 20 clan tags at once, with `#` optional.
-- Automatically picks the latest ended CWL season across all requested clans.
-- Per-player totals and averages: wars participated, attacks, missed attacks, attack stars,
-  average stars, destruction, defenses, defense stars, average defense, reaches and dips.
-- Sortable, searchable HTML table preview with clan filtering and a "only missed attacks" filter.
-- One polished `Players` sheet in the exported workbook, with conditional formatting, frozen
-  header, autofilter, print settings and a legal/data-source footer.
-- Remembers the last submitted clan tags across app restarts.
-- Local **Reports** library with nested folders, drag-free move/reorder controls and search.
-- **Save to reports** keeps a JSON snapshot of a generated report; XLSX export stays separate.
-- **CWL Roster Maker** with one roster table per clan, ordered by league rank, drag-and-drop or
-  add buttons, extra clans loaded by tag, manual players and a single-table XLSX export.
-- Reports and rosters share the same folder tree, and you choose the destination folder when
-  saving either one.
-- Native save dialogs, then "Show in folder" from the success toast.
-- Clear warnings for untracked clans, clans missing the selected season, incomplete wars and
-  suspicious totals.
-- No account, no telemetry, no official Supercell API token.
-- Finished-season data is cached locally, so repeat reports are fast.
+    /* Glow background orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+      opacity: 0.35;
+      animation: float 12s ease-in-out infinite;
+    }
+    .orb-1 { top: -10%; left: -10%; width: 600px; height: 600px; background: var(--primary); animation-delay: 0s; }
+    .orb-2 { bottom: -10%; right: -10%; width: 500px; height: 500px; background: var(--accent); animation-delay: -4s; }
+    .orb-3 { top: 20%; right: -5%; width: 400px; height: 400px; background: #6999ff; animation-delay: -8s; }
 
-## Requirements
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -50px) scale(1.1); }
+      66% { transform: translate(-20px, 40px) scale(0.95); }
+    }
 
-- Windows 10 or 11, 64-bit.
-- Internet access to `api.clashk.ing`.
-- Clans must be tracked by ClashKing. See [Tracking a clan](#tracking-a-clan-with-clashking).
+    /* Header */
+    header {
+      padding: 48px 0 20px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
 
-For development: Node.js 20.19+ or 22.12+ and npm.
+    .logo {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-lg);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      box-shadow: 0 0 30px var(--primary-glow);
+      margin-bottom: 16px;
+      animation: pulse 3s ease-in-out infinite;
+    }
 
-## Using the app
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 30px var(--primary-glow); }
+      50% { box-shadow: 0 0 50px var(--accent-glow); }
+    }
 
-1. Paste clan tags, one per line or separated by commas.
-2. Click **Generate report**. The submitted tags are remembered for the next launch.
-3. Review the preview. Warnings at the top explain any clan that could not be included.
-4. Click **Save to reports** to keep the report in the local library, and/or **Save XLSX** to
-   write a workbook anywhere on the computer.
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin: 0 0 8px;
+      background: linear-gradient(135deg, var(--text), var(--primary-hover));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-The report always uses the newest CWL season that has **ended** in ClashKing. If the current CWL
-is still running, the previous season is used.
+    .subtitle {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--text-muted);
+      max-width: 620px;
+      margin: 0 auto 8px;
+      font-weight: 400;
+    }
 
-### Reports and rosters
+    .tagline {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
 
-The **Reports** tab is a local library stored in Electron's `userData` directory. It supports
-nested folders, search, renaming, moving and reordering. Deleting a folder also deletes the
-reports and rosters inside it.
+    /* Badges */
+    .badges {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 24px 0;
+      flex-wrap: wrap;
+    }
 
-To build a lineup, open **Roster Maker**, choose a saved report, and drag any player onto any clan
-table, even when they played for a different clan in the report. Every clan from the report gets a
-section, ordered from Legend League down to Bronze League; divisions run I to III with I highest,
-and Legend League has no division. Players can be moved between clan tables, reordered with the
-arrow buttons or removed. Each clan table has no player limit.
+    .badge {
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border);
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      transition: all var(--transition);
+    }
 
-Use **Add clan** below the sections to load another clan's CWL players for the same season, and
-**Add player** inside any section for a manual entry. Rosters are saved as snapshots, so a saved
-roster keeps working even if its source report is later deleted. Saving a roster asks for a name
-and destination folder in the same library; **Export XLSX** writes one rank-ordered table wherever
-you choose.
+    .badge:hover {
+      border-color: var(--primary);
+      color: var(--primary-hover);
+      box-shadow: 0 0 20px var(--primary-dim);
+    }
 
-The `#` column in the app and workbook is the player's full player tag (for example
-`#2YLCCLL0Y`), not a map position.
+    .badge.primary { border-color: var(--primary); color: var(--primary-hover); box-shadow: 0 0 20px var(--primary-dim); }
 
-## Tracking a clan with ClashKing
+    /* Divider */
+    .divider {
+      margin: 60px 0;
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+    }
 
-ClashKing only stores detailed CWL history for clans added to a Discord server with the ClashKing
-bot. This is a one-time setup per clan:
+    /* Section */
+    section { padding: 70px 0; position: relative; z-index: 1; }
 
-1. Use or create a Discord server.
-2. Invite ClashKing with the required permissions: <https://invite.clashk.ing>.
-3. Create a member role and a clan channel.
-4. Run `/addclan` and provide the clan tag, category, member role and clan channel.
-5. Wait for ClashKing to poll the game, then generate the report again.
+    h2 {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
 
-Add clans **before** the CWL starts. ClashKing does not guarantee a historical backfill after a
-clan is added, so tracking usually begins with the next CWL. The app shows the same instructions
-when it finds an untracked clan, and the **How tracking works** dialog links to the official
-ClashKing documentation.
+    .section-desc {
+      text-align: center;
+      color: var(--text-muted);
+      max-width: 650px;
+      margin: 0 auto 48px;
+      font-size: 1.05rem;
+    }
 
-## Column definitions
+    /* Cards grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
 
-| Column | Meaning |
-| --- | --- |
-| Clan | Clan name for this row |
-| Name | Player name as shown in the most recent war played |
-| `#` | Full player tag |
-| TH | Town Hall level in the most recent war played |
-| Wars Participated | Wars in which the player appeared on the clan lineup |
-| Attacks | Attacks used |
-| Missed | Wars participated minus attacks used |
-| Attack Stars | Total stars earned in attack |
-| Avg Stars | Attack stars divided by attacks |
-| Destruction | Sum of destruction percentage across all attacks |
-| Defenses | Opponent attacks received |
-| Defense Stars | Stars conceded while defending |
-| Avg Defense | Defense stars divided by defenses (lower is better) |
-| Reaches | Attacks made against a higher Town Hall |
-| Dips | Attacks made against a lower Town Hall |
+    .card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      backdrop-filter: blur(16px);
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
 
-Defense statistics are derived from the opposing clan's attack records where `defenderTag`
-matches the player. A CWL player normally has one attack per war.
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
 
-## Development
+    .card:hover {
+      border-color: var(--border-glass);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 48px rgba(0,0,0,0.35);
+    }
 
-```bash
-cd raven-hub-cwl-report
-npm install
-npm run dev        # Electron + Vite with hot reload
-npm test           # Vitest unit and integration tests
-npm run typecheck  # TypeScript for main and renderer
-npm run build      # typecheck + production bundles in out/
-npm run start      # preview the production build
-```
+    .card:hover::before { opacity: 1; }
 
-### Build the Windows app
+    .card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
 
-On Windows:
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 18px;
+      line-height: 1.7;
+    }
 
-```bash
-npm run build:win
-```
+    .card .tech {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
 
-Artifacts are written to `release/`:
+    .tech span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-subtle);
+    }
 
-- `RavenHub-Clash-of-Clans-CWL-Report-<version>-x64.exe` — NSIS installer
-- `RavenHub-Clash-of-Clans-CWL-Report-<version>-portable.exe` — portable executable
+    .card .link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary-hover);
+    }
 
-From Linux or macOS, the same command works inside the official Wine-enabled electron-builder
-image (Docker required):
+    .card .link:hover { color: var(--accent); text-decoration: none; }
 
-```bash
-docker run --rm \
-  -v "$PWD":/project \
-  -v "$HOME/.cache/electron":/root/.cache/electron \
-  -v "$HOME/.cache/electron-builder":/root/.cache/electron-builder \
-  -w /project \
-  electronuserland/builder:wine npm run build:win
-```
+    /* CTA */
+    .cta {
+      text-align: center;
+      padding: 80px 24px;
+      background: linear-gradient(120deg, var(--primary-dim) 0%, var(--surface) 50%, var(--primary-dim) 100%);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      margin-top: 20px;
+    }
 
-The installers are unsigned because no code-signing certificate is configured. Windows
-SmartScreen may show a warning on first launch; that is expected for an unsigned community app.
-A Linux AppImage can be produced with `npm run build:linux`.
+    .cta h2 {
+      color: var(--text);
+      margin-bottom: 12px;
+    }
 
-### Verify ClashKing coverage
+    .cta p {
+      color: var(--text-muted);
+      margin-bottom: 30px;
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
-Before sharing the app, check that every clan is tracked and has a finished season:
+    .btn-group { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 
-```bash
-npm run check:clashking -- '#2YLCCLL0Y' '#GCQL0029'
-```
+    .btn {
+      padding: 14px 32px;
+      border-radius: var(--radius-lg);
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+      cursor: pointer;
+    }
 
-The helper prints the latest ended seasons, group state and how many wars ClashKing returns. A
-live end-to-end report test is also available but disabled by default:
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      box-shadow: 0 0 30px var(--primary-glow);
+    }
 
-```bash
-LIVE_CLASHKING=1 LIVE_TAGS='#2YLCCLL0Y' npx vitest run src/main/domain/live.test.ts
-```
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px var(--primary-glow);
+      filter: brightness(1.1);
+    }
 
-On PowerShell, set the variables with `$env:LIVE_CLASHKING='1'` and `$env:LIVE_TAGS='#...'`.
+    .btn-ghost {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
 
-## Data source and caching
+    .btn-ghost:hover {
+      border-color: var(--primary);
+      color: var(--primary-hover);
+    }
 
-All CWL data comes from [ClashKing](https://clashk.ing). The app requests:
+    /* Stats */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      padding-top: 30px;
+      border-top: 1px solid var(--glass-border);
+    }
 
-- `GET https://api.clashk.ing/v2/cwl/{tag}/seasons?limit=24`
-- `GET https://api.clashk.ing/v2/cwl/{tag}/group?season={season}`
+    .stat {
+      text-align: center;
+    }
 
-Season metadata is cached for 15 minutes. Group data for a finished season is cached permanently
-because the season no longer changes. Cache files live under Electron's `userData` directory; the
-exact path is shown in **About**. Deleting that folder is always safe.
+    .stat strong {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text);
+      display: block;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--primary-hover), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-Saved reports and rosters live next to the cache, under `userData/library`:
+    .stat span {
+      font-size: 0.8rem;
+      color: var(--text-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+    }
 
-- `settings.json` stores the last submitted tags and the last folder used for reports and rosters.
-- `library/library.json` stores the folder tree and item index.
-- `library/reports/<id>.json` stores report snapshots.
-- `library/rosters/<id>.json` stores roster snapshots, including every player row, the roster
-  season, clan/league metadata and players loaded from extra clans.
+    /* Footer */
+    footer {
+      padding: 50px 0 30px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      color: var(--text-subtle);
+      font-size: 0.85rem;
+    }
 
-Writes are atomic and corrupted optional state falls back safely. Deleting `library` from disk is
-safe but permanently removes saved reports and rosters.
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
 
-The app does not present ClashKing data as independently collected. ClashKing is credited in the
-app, in the workbook footer and in the workbook metadata.
+    .footer-links a {
+      color: var(--text-subtle);
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
 
-## Limitations
+    .footer-links a:hover { color: var(--primary-hover); text-decoration: none; }
 
-- Only CWL is supported; regular clan wars and Clan Capital are out of scope.
-- Only the latest ended season is reported. Historical season selection may be added later.
-- ClashKing must already track the clan and have data for the selected season.
-- `Wars Participated` counts appearances on the lineup, including wars with no attacks used.
-- Town Hall is taken from the player's most recent war in the season, which keeps reaches/dips
-  aligned with current upgrades.
-- The app requires a network connection; cached data is used when available.
+    .legal {
+      font-size: 0.75rem;
+      color: var(--text-subtle);
+      margin-top: 10px;
+    }
 
-## Legal
+    /* Responsive */
+    @media (max-width: 640px) {
+      .btn-group { flex-direction: column; align-items: center; }
+      .card { padding: 26px 22px; }
+    }
+  </style>
+</head>
+<body>
 
-- Data provided by **ClashKing** — <https://clashk.ing>. Use of that data is subject to
-  ClashKing's terms.
-- This material is unofficial and is not endorsed by Supercell. For more information see
-  Supercell's Fan Content Policy: <https://www.supercell.com/fan-content-policy>.
-- Clash of Clans and its logos are trademarks of Supercell.
-- The application source code is MIT licensed. See [LICENSE](LICENSE).
+  <!-- Ambient orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
 
-## Project structure
+  <div class="container">
+    <header>
+      <div class="logo" aria-label="Raven Hub logo">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 8px rgba(255,255,255,0.6));">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 -5 10 5"/>
+          <circle cx="12" cy="12" r="4" stroke="#22d3ee" stroke-width="2"/>
+        </svg>
+      </div>
+      <h1>Raven Hub</h1>
+      <p class="subtitle">Custom Discord bots, hosting, and community tooling — built for clan leaders, server owners, and developers who want power without complexity.</p>
+      <div class="tagline">Open Source · Built in the Open · Discord Native</div>
+      <div class="badges">
+        <span class="badge primary">Electron · React · TypeScript</span>
+        <span class="badge">Discord.js · Node.js</span>
+        <span class="badge">ClashKing API</span>
+        <span class="badge">MIT License</span>
+        <span class="badge">Windows Ready</span>
+        <span class="badge">No Telemetry</span>
+      </div>
+    </header>
 
-```text
-src/
-  main/                 Electron main process
-    clashking/          ClashKing HTTP client, schemas and disk cache
-    domain/             Season selection, aggregation, report orchestration
-    export/             ExcelJS report and roster workbook generation
-    storage/            Atomic JSON file helpers
-  preload/              Context-isolated IPC bridge
-  renderer/             React UI
-  shared/               Shared types, tag parsing, season helpers
-build/                  App icons used by Electron and electron-builder
-scripts/                Optional live smoke checks
-```
+    <hr class="divider" />
+
+    <section>
+      <h2>What we build</h2>
+      <p class="section-desc">Open-source tools and services for Discord communities — from moderation and economy to Clash of Clans CWL reporting and custom bot development.</p>
+      <div class="grid">
+        <article class="card">
+          <h3>🪶 Raven Hub — CWL Report</h3>
+          <p>A free Windows desktop app that turns Clash of Clans Clan War Leagues history into a clean, shareable Excel report. Paste clan tags, generate the latest finished season, preview per-player stats, and export styled XLSX workbooks.</p>
+          <div class="tech">
+            <span>Electron</span>
+            <span>React 19</span>
+            <span>TypeScript</span>
+            <span>ExcelJS</span>
+          </div>
+          <a href="https://github.com/Raven-Hub-OS/Raven-Hub---Clash-of-Clans-CWL-Report" class="link" target="_blank">View repository →</a>
+        </article>
+
+        <article class="card">
+          <h3>🤖 Raven Bot</h3>
+          <p>A modular Discord bot with ticket systems, giveaways, moderation, economy, social notifications, and database-backed server settings. Built with discord.js and ready to deploy.</p>
+          <div class="tech">
+            <span>discord.js v14</span>
+            <span>Node.js</span>
+            <span>PostgreSQL</span>
+            <span>Docker</span>
+          </div>
+          <a href="https://github.com/Raven-Hub-OS/raven-bot" class="link" target="_blank">View repository →</a>
+        </article>
+
+        <article class="card">
+          <h3>🌐 Raven Hub Website</h3>
+          <p>The official storefront and documentation hub. Custom Discord bot packs, hosting, and community services — all in one place.</p>
+          <div class="tech">
+            <span>HTML5</span>
+            <span>CSS3</span>
+            <span>JavaScript</span>
+            <span>Netlify</span>
+          </div>
+          <a href="https://ravenhub.store" class="link" target="_blank">Visit website →</a>
+        </article>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <section>
+      <h2>Why Raven Hub?</h2>
+      <p class="section-desc">Running a community shouldn't mean juggling a dozen tools. We bring useful features together under one roof.</p>
+      <div class="stats">
+        <div class="stat">
+          <strong>0€</strong>
+          <span>Free core tools</span>
+        </div>
+        <div class="stat">
+          <strong>∞</strong>
+          <span>Servers supported</span>
+        </div>
+        <div class="stat">
+          <strong>0</strong>
+          <span>Telemetry / tracking</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="cta">
+      <h2>Join the community</h2>
+      <p>Get support, suggest features, and stay updated on new releases.</p>
+      <div class="btn-group">
+        <a href="https://discord.gg/CjHv7Jpk5d" class="btn btn-primary" target="_blank">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 2.163c3.204 0 5.806 2.494 5.806 5.806 0 2.603-1.671 4.791-3.928 5.535v-3.584H9.43v3.584c-2.257-.744-3.836-2.932-3.836-5.535 0-3.313 2.602-5.806 5.806-5.806m0 10.411c-2.545 0-4.613-2.068-4.613-4.613 0-2.546 2.068-4.613 4.613-4.613 2.545 0 4.613 2.067 4.613 4.613 0 2.545-2.068 4.613-4.613 4.613z"/></svg>
+          Discord Server
+        </a>
+        <a href="https://ravenhub.store" class="btn btn-ghost" target="_blank">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+          ravenhub.store
+        </a>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <footer>
+      <div class="footer-links">
+        <a href="https://ravenhub.store" target="_blank">Website</a>
+        <a href="https://discord.gg/CjHv7Jpk5d" target="_blank">Discord</a>
+        <a href="https://github.com/Raven-Hub-OS" target="_blank">Organization</a>
+      </div>
+      <div class="legal">
+        Raven Hub &copy; 2026. Open source under the MIT License.<br>
+        This material is unofficial and is not endorsed by Supercell. Data provided by ClashKing (clashk.ing).
+      </div>
+    </footer>
+  </div>
+
+</body>
+</html>
