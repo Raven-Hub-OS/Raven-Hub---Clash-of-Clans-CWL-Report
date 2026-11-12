@@ -18,13 +18,14 @@ jobs:
         with:
           node-version: 20
 
+      - name: Instalar Wine para build Windows
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y wine64 wine32
+
       - name: Instalar dependências
         run: npm install
-
-      - name: Instalar Wine para build Windows
-        uses: egor-tensin/setup-wine@v1
-        with:
-          wine-version: 8.0
 
       - name: Build da aplicação
         run: npm run build
