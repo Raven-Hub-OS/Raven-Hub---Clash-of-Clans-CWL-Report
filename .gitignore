@@ -46,3 +46,4 @@ AGENTS.md
 # Electron / macOS
 *.app
 *.dmg
+out.root/
