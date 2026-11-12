@@ -1,0 +1,48 @@
+appId: com.ravenhub.cwlreport
+productName: Raven Hub - Clash of Clans CWL Report
+copyright: Copyright © 2026 Raven Hub
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - out/**/*
+  - package.json
+  - node_modules/**/*
+
+extraResources:
+  - from: build/icon.png
+    to: icon.png
+
+asar: true
+compression: normal
+
+win:
+  icon: build/icon.ico
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+  artifactName: RavenHub-Clash-of-Clans-CWL-Report-${version}-${arch}.${ext}
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Raven Hub - Clash of Clans CWL Report
+  uninstallDisplayName: Raven Hub - Clash of Clans CWL Report
+
+portable:
+  artifactName: RavenHub-Clash-of-Clans-CWL-Report-${version}-portable.${ext}
+
+linux:
+  icon: build/icon.png
+  category: Office
+  target:
+    - AppImage

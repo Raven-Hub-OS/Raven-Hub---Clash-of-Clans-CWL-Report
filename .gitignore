@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+out/
+dist/
+release/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Coverage
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*.swo
+
+# Local / temporary
+*.tmp
+*.temp
+.cache/
+
+# Agent / project guidance (not part of the shipped open-source source)
+AGENTS.md
+
+# Electron / macOS
+*.app
+*.dmg
