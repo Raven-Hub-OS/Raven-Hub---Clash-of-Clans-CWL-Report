@@ -8,8 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: electronuserland/builder:wine
 
     steps:
       - name: Checkout do código
@@ -23,6 +21,11 @@ jobs:
       - name: Instalar dependências
         run: npm install
 
+      - name: Instalar Wine para build Windows
+        uses: egor-tensin/setup-wine@v1
+        with:
+          wine-version: 8.0
+
       - name: Build da aplicação
         run: npm run build
 
@@ -30,5 +33,5 @@ jobs:
         run: npm run build:win -- --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WINEPREFIX: /root/.wine
-          HOME: /root
+          WINEPREFIX: /home/runner/.wine
+          HOME: /home/runner
