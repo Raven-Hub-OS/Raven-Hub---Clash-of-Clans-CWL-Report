@@ -24,6 +24,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y wine64 wine32
 
+      - name: Verificar ícones do build
+        run: |
+          test -f build/icon.ico
+          test -f build/icon.png
+
       - name: Instalar dependências
         run: npm install
 
