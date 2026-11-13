@@ -39,7 +39,6 @@ nsis:
   createStartMenuShortcut: true
   shortcutName: Raven Hub - Clash of Clans CWL Report
   uninstallDisplayName: Raven Hub - Clash of Clans CWL Report
-  icon: build/icon.ico
 
 portable:
   artifactName: RavenHub-Clash-of-Clans-CWL-Report-${version}-portable.${ext}
