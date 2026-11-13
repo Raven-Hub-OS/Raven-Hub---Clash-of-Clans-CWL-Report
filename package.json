@@ -1,7 +1,7 @@
 {
   "name": "raven-hub-cwl-report",
-  "productName": "Raven Hub - Clash of Clans CWL Report",
-  "version": "0.1.1-beta.6",
+  "productName": "Raven Hub CWL Report",
+  "version": "0.1.1-beta.7",
   "description": "Desktop reports for Clash of Clans Clan War Leagues, powered by ClashKing.",
   "main": "./out/main/index.js",
   "author": "Raven Hub",

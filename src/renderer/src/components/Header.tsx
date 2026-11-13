@@ -37,7 +37,7 @@ export function Header({
           <Logo size={40} />
           <div className="brand-copy">
             <span className="brand-name">Raven Hub</span>
-            <span className="brand-sub">Clash of Clans CWL Report</span>
+            <span className="brand-sub">CWL Report</span>
           </div>
         </div>
 

@@ -1,4 +1,5 @@
 import { app, BrowserWindow, Menu, shell, ipcMain } from 'electron'
+import { existsSync, renameSync } from 'node:fs'
 import { join } from 'node:path'
 import { APP_NAME } from '@shared/app'
 import { IPC_CHANNELS } from '@shared/types'
@@ -7,8 +8,27 @@ import { isAllowedExternalUrl } from './external'
 import { autoUpdater } from 'electron-updater'
 
 const APP_ID = 'com.ravenhub.cwlreport'
+const LEGACY_PRODUCT_NAME = 'Raven Hub - Clash of Clans CWL Report'
 
 let mainWindow: BrowserWindow | null = null
+
+// The product was renamed, which moves Electron's userData folder. Move the old
+// settings/library/cache over once so existing installs keep their reports.
+function migrateLegacyUserData(): void {
+  const currentDir = app.getPath('userData')
+  if (currentDir.endsWith(LEGACY_PRODUCT_NAME)) return
+
+  const legacyDir = join(app.getPath('appData'), LEGACY_PRODUCT_NAME)
+  if (existsSync(currentDir) || !existsSync(legacyDir)) return
+
+  try {
+    renameSync(legacyDir, currentDir)
+  } catch {
+    // If the move fails, keep the new location; old data stays untouched.
+  }
+}
+
+migrateLegacyUserData()
 
 function checkForUpdates(): void {
   if (process.env.NODE_ENV === 'development' || !app.isPackaged) return

@@ -1,5 +1,5 @@
 appId: com.ravenhub.cwlreport
-productName: Raven Hub - Clash of Clans CWL Report
+productName: Raven Hub CWL Report
 copyright: Copyright © 2026 Raven Hub
 
 directories:
@@ -29,7 +29,7 @@ win:
     - target: portable
       arch:
         - x64
-  artifactName: RavenHub-Clash-of-Clans-CWL-Report-${version}-${arch}.${ext}
+  artifactName: RavenHub-CWL-Report-${version}-${arch}.${ext}
 
 nsis:
   oneClick: false
@@ -37,13 +37,13 @@ nsis:
   allowToChangeInstallationDirectory: true
   createDesktopShortcut: true
   createStartMenuShortcut: true
-  shortcutName: Raven Hub - Clash of Clans CWL Report
-  uninstallDisplayName: Raven Hub - Clash of Clans CWL Report
+  shortcutName: Raven Hub CWL Report
+  uninstallDisplayName: Raven Hub CWL Report
   installerIcon: build/icon.ico
   uninstallerIcon: build/icon.ico
 
 portable:
-  artifactName: RavenHub-Clash-of-Clans-CWL-Report-${version}-portable.${ext}
+  artifactName: RavenHub-CWL-Report-${version}-portable.${ext}
 
 publish:
   provider: github

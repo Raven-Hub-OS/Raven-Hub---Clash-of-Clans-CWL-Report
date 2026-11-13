@@ -1,4 +1,4 @@
-# Raven Hub - Clash of Clans CWL Report
+# Raven Hub CWL Report
 
 A free Windows desktop app that turns Clash of Clans Clan War Leagues history into a clean, shareable Excel report.
 
@@ -136,8 +136,8 @@ npm run build:win
 
 Artifacts are written to `release/`:
 
-- `RavenHub-Clash-of-Clans-CWL-Report-<version>-x64.exe` — NSIS installer
-- `RavenHub-Clash-of-Clans-CWL-Report-<version>-portable.exe` — portable executable
+- `RavenHub-CWL-Report-<version>-x64.exe` — NSIS installer
+- `RavenHub-CWL-Report-<version>-portable.exe` — portable executable
 
 From Linux or macOS, the same command works inside the official Wine-enabled electron-builder image (Docker required):
 
